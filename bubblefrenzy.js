@@ -43,14 +43,40 @@ class Bubble {
 
 }
 
+function getDistance(x1, y1, x2, y2) {
+  let xDistance = x2 - x1;
+  let yDistance = y2 - y1;
+
+  return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+}
+
+function randomIntFromRange(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function randomColors(colors) {
+  return colors[Math.floor(Math.random() * colors.length)]
+};
+
 // initialising bubbles
 
 for (let i = 0; i < bubbleFrenzyGame.numberOfBubbles; i += 1) {
-  let x = Math.random() * bubbleFrenzyGame.canvas.width;
-  let y = Math.random() * bubbleFrenzyGame.canvas.height;
-  let min = bubbleFrenzyGame.bubbleMinSize;
-  let max = bubbleFrenzyGame.bubbleMaxSize;
-  let randomRadius = Math.floor(Math.random() * (max - min + 1)) + min;
+  let randomRadius = randomIntFromRange(bubbleFrenzyGame.bubbleMinSize, bubbleFrenzyGame.bubbleMaxSize);
+  let x = randomIntFromRange(randomRadius, bubbleFrenzyGame.canvas.width - randomRadius);
+  let y = randomIntFromRange(randomRadius, bubbleFrenzyGame.canvas.height - randomRadius);
+  console.log(randomRadius, x, y)
+  if (i !== 0) {
+    for (let j = 0; j < bubbleFrenzyGame.bubbles.length; j += 1) {
+      if (getDistance(x, y, bubbleFrenzyGame.bubbles[j].x, bubbleFrenzyGame.bubbles[j].y) - randomRadius * 2 < 0) {
+        x = randomIntFromRange(randomRadius, bubbleFrenzyGame.canvas.width - randomRadius);
+        y = randomIntFromRange(randomRadius, bubbleFrenzyGame.canvas.height - randomRadius);
+        
+        console.log('-->', randomRadius, x, y);
+        j = -1;
+      }
+    }
+  }
+
   let newBubble = new Bubble(randomRadius, 'red', x, y);
   bubbleFrenzyGame.bubbles.push(newBubble);
 }
@@ -62,9 +88,10 @@ function updateGameArea() {
 
   for (let i = 0; i < bubbleFrenzyGame.bubbles.length; i += 1) {
     let bubbleX = bubbleFrenzyGame.bubbles[i];
-    bubbleX.newPos();
+    // bubbleX.newPos();
     bubbleX.update();
 
+    // border collision check
     if ((bubbleX.radius + bubbleX.y) + bubbleX.speedY > bubbleFrenzyGame.canvas.height || bubbleX.y + bubbleX.speedY < 0 + bubbleX.radius) {
       bubbleX.speedY *= -1;
     }
