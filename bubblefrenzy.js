@@ -11,10 +11,16 @@ var bubbleFrenzyGame = {
   clear: function () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   },
-  numberOfBubbles: 4,
+  numberOfBubbles: 30,
   bubbles: [],
-  bubbleMinSize: 35,
+  bubbleMinSize: 5,
   bubbleMaxSize: 50,
+  colors: [
+   '#2185C5',
+   '#7ECEFD',
+  //  '#FFF6E5',
+   '#FF7F66' 
+  ]
 };
 
 class Bubble {
@@ -23,17 +29,24 @@ class Bubble {
     this.color = color;
     this.x = x + radius;
     this.y = y + radius;
-    this.speedX = 1;
-    this.speedY = 1;
+    this.speedX = (Math.random() - 0.5) * 5;
+    this.speedY = (Math.random() - 0.5) * 5;
+    this.mass = 1;
   }
 
   update() {
     var ctx = bubbleFrenzyGame.context;
     ctx.beginPath();
-    ctx.strokeStyle = this.color;
+    ctx.fillStyle = this.color;
     ctx.arc(this.x, this.y, this.radius, 0, 7);
-    ctx.stroke();
+    ctx.fill();
+    ctx.closePath();
 
+     for (let i = 0; i < bubbleFrenzyGame.bubbles.length; i += 1) {
+      if (this === bubbleFrenzyGame.bubbles[i]) continue;
+
+      if (getDistance(this.x, this.y, bubbleFrenzyGame.bubbles[i].x, bubbleFrenzyGame.bubbles[i].y) - this.radius * 2 < 0) console.log('has collided');
+    }
   }
 
   newPos() {
@@ -62,44 +75,48 @@ function randomColors(colors) {
 
 for (let i = 0; i < bubbleFrenzyGame.numberOfBubbles; i += 1) {
   let randomRadius = randomIntFromRange(bubbleFrenzyGame.bubbleMinSize, bubbleFrenzyGame.bubbleMaxSize);
-  let x = randomIntFromRange(randomRadius, bubbleFrenzyGame.canvas.width - randomRadius);
-  let y = randomIntFromRange(randomRadius, bubbleFrenzyGame.canvas.height - randomRadius);
+  let x = randomIntFromRange(randomRadius, 600 - randomRadius);
+  let y = randomIntFromRange(randomRadius, 400 - randomRadius);
+  let color = randomColors(bubbleFrenzyGame.colors);
   console.log(randomRadius, x, y)
   if (i !== 0) {
     for (let j = 0; j < bubbleFrenzyGame.bubbles.length; j += 1) {
+      console.log(getDistance(x, y, bubbleFrenzyGame.bubbles[j].x, bubbleFrenzyGame.bubbles[j].y) - randomRadius * 2 < 0)
       if (getDistance(x, y, bubbleFrenzyGame.bubbles[j].x, bubbleFrenzyGame.bubbles[j].y) - randomRadius * 2 < 0) {
-        x = randomIntFromRange(randomRadius, bubbleFrenzyGame.canvas.width - randomRadius);
-        y = randomIntFromRange(randomRadius, bubbleFrenzyGame.canvas.height - randomRadius);
-        
+        x = randomIntFromRange(randomRadius, 600 - randomRadius);
+        y = randomIntFromRange(randomRadius, 400 - randomRadius);
+
         console.log('-->', randomRadius, x, y);
         j = -1;
       }
     }
   }
 
-  let newBubble = new Bubble(randomRadius, 'red', x, y);
+  let newBubble = new Bubble(randomRadius, color, x, y);
   bubbleFrenzyGame.bubbles.push(newBubble);
 }
 
-console.log(bubbleFrenzyGame.bubbles);
+console.log(bubbleFrenzyGame.canvas.width, bubbleFrenzyGame.canvas.height);
 
 function updateGameArea() {
+  // bubbleFrenzyGame.start();
+
   bubbleFrenzyGame.clear();
 
   for (let i = 0; i < bubbleFrenzyGame.bubbles.length; i += 1) {
     let bubbleX = bubbleFrenzyGame.bubbles[i];
-    // bubbleX.newPos();
+    bubbleX.newPos();
     bubbleX.update();
 
     // border collision check
-    if ((bubbleX.radius + bubbleX.y) + bubbleX.speedY > bubbleFrenzyGame.canvas.height || bubbleX.y + bubbleX.speedY < 0 + bubbleX.radius) {
+    if ((bubbleX.radius + bubbleX.y) + bubbleX.speedY > 400 || bubbleX.y + bubbleX.speedY < 0 + bubbleX.radius) {
       bubbleX.speedY *= -1;
     }
-    if ((bubbleX.radius + bubbleX.x) + bubbleX.speedX > bubbleFrenzyGame.canvas.width || bubbleX.x + bubbleX.speedX < 0 + bubbleX.radius) {
+    if ((bubbleX.radius + bubbleX.x) + bubbleX.speedX > 600 || bubbleX.x + bubbleX.speedX < 0 + bubbleX.radius) {
       bubbleX.speedX *= -1;
     }
   }
-
+  // requestAnimationFrame(updateGameArea)
 }
 
 function isMouseHit(mousePos, bubble) {
