@@ -11,9 +11,9 @@ var bubbleFrenzyGame = {
   clear: function () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   },
-  numberOfBubbles: 30,
+  numberOfBubbles: 100,
   bubbles: [],
-  bubbleMinSize: 5,
+  bubbleMinSize: 20,
   bubbleMaxSize: 50,
   colors: [
    '#2185C5',
@@ -75,22 +75,10 @@ function randomColors(colors) {
 
 for (let i = 0; i < bubbleFrenzyGame.numberOfBubbles; i += 1) {
   let randomRadius = randomIntFromRange(bubbleFrenzyGame.bubbleMinSize, bubbleFrenzyGame.bubbleMaxSize);
-  let x = randomIntFromRange(randomRadius, 600 - randomRadius);
-  let y = randomIntFromRange(randomRadius, 400 - randomRadius);
+  let x = randomIntFromRange(randomRadius, 600 - randomRadius * 2);
+  let y = randomIntFromRange(randomRadius, 400 - randomRadius * 2);
   let color = randomColors(bubbleFrenzyGame.colors);
   console.log(randomRadius, x, y)
-  if (i !== 0) {
-    for (let j = 0; j < bubbleFrenzyGame.bubbles.length; j += 1) {
-      console.log(getDistance(x, y, bubbleFrenzyGame.bubbles[j].x, bubbleFrenzyGame.bubbles[j].y) - randomRadius * 2 < 0)
-      if (getDistance(x, y, bubbleFrenzyGame.bubbles[j].x, bubbleFrenzyGame.bubbles[j].y) - randomRadius * 2 < 0) {
-        x = randomIntFromRange(randomRadius, 600 - randomRadius);
-        y = randomIntFromRange(randomRadius, 400 - randomRadius);
-
-        console.log('-->', randomRadius, x, y);
-        j = -1;
-      }
-    }
-  }
 
   let newBubble = new Bubble(randomRadius, color, x, y);
   bubbleFrenzyGame.bubbles.push(newBubble);
