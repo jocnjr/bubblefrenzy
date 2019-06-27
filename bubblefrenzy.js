@@ -15,7 +15,7 @@ let bubbleFrenzyGame = {
   numberOfBubbles: 20,
   bubbles: [],
   bubbleMinSize: 90,
-  bubbleMaxSize: 150,
+  bubbleMaxSize: 200,
   colors: [
     '#1A5AD9',
     '#48D904',
