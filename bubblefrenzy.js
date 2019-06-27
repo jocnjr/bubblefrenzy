@@ -7,14 +7,15 @@ let bubbleFrenzyGame = {
     // this.canvas.style = 'border: 1px black dotted';
     document.body.insertBefore(this.canvas, document.body.childNodes[0]);
     this.interval = setInterval(updateGameArea, 20);
+
   },
   clear: function () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   },
-  numberOfBubbles: 15,
+  numberOfBubbles: 20,
   bubbles: [],
-  bubbleMinSize: 80,
-  bubbleMaxSize: 125,
+  bubbleMinSize: 90,
+  bubbleMaxSize: 150,
   colors: [
     '#1A5AD9',
     '#48D904',
