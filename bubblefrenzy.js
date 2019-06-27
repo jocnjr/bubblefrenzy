@@ -12,10 +12,10 @@ let bubbleFrenzyGame = {
   clear: function () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   },
-  numberOfBubbles: 50,
+  numberOfBubbles: 30,
   bubbles: [],
   bubbleMinSize: 90,
-  bubbleMaxSize: 200,
+  bubbleMaxSize: 150,
   colors: [
     '#1A5AD9',
     '#48D904',
@@ -47,6 +47,11 @@ let bubbleFrenzyGame = {
     this.context.font = "18px serif";
     this.context.fillStyle = "#024059";
     this.context.fillText("round: " + this.round, bubbleFrenzyGame.canvas.width - 100, bubbleFrenzyGame.canvas.height - 40);
+  },
+  drawBubblesNumber: function () {
+    this.context.font = "18px serif";
+    this.context.fillStyle = "#024059";
+    this.context.fillText("bubles: " + this.bubbles.length, bubbleFrenzyGame.canvas.width - 100, bubbleFrenzyGame.canvas.height - 60);
   },
   updateScore: function (newScore) {
     this.points += Math.floor(newScore * 50 * newScore);
@@ -142,6 +147,7 @@ function updateGameArea() {
 
   bubbleFrenzyGame.drawScore();
   bubbleFrenzyGame.drawRound();
+  bubbleFrenzyGame.drawBubblesNumber();
 }
 
 function isMouseHit(mousePos, bubble) {
