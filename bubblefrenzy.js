@@ -1,9 +1,8 @@
-
 let bubbleFrenzyGame = {
   canvas: document.createElement("canvas"),
   start: function () {
-    this.canvas.width = window.innerWidth - 4;
-    this.canvas.height = window.innerHeight - 4;
+    this.canvas.width = window.innerWidth - 10;
+    this.canvas.height = window.innerHeight - 10;
     this.context = this.canvas.getContext("2d");
     // this.canvas.style = 'border: 1px black dotted';
     document.body.insertBefore(this.canvas, document.body.childNodes[0]);
@@ -12,15 +11,22 @@ let bubbleFrenzyGame = {
   clear: function () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   },
-  numberOfBubbles: 5,
+  numberOfBubbles: 15,
   bubbles: [],
   bubbleMinSize: 80,
   bubbleMaxSize: 125,
   colors: [
     '#1A5AD9',
-    '##48D904',
+    '#48D904',
     '#F2BC1B',
-    '#F25116'
+    '#F25116',
+    '#A6033F',
+    '#201F40',
+    '#F20F79',
+    '#04ADBF',
+    '#D7F205',
+    '#F25764', 
+    '#F21313'
   ],
   sounds: [
     // 'soundBubbles',
@@ -45,9 +51,9 @@ let bubbleFrenzyGame = {
     this.points += Math.floor(newScore * 50 * newScore);
   },
   nextRound: function () {
-    this.numberOfBubbles = this.numberOfBubbles * 1.6;
-    this.bubbleMinSize = this.bubbleMinSize * 0.85;
-    this.bubbleMaxSize = this.bubbleMaxSize * 0.6;
+    this.numberOfBubbles = this.numberOfBubbles * 2;
+    this.bubbleMinSize = this.bubbleMinSize * 0.75;
+    this.bubbleMaxSize = this.bubbleMaxSize * 0.75;
     this.round += 1;
     console.log('next round!', this)
   }
@@ -150,16 +156,16 @@ bubbleFrenzyGame.canvas.addEventListener('click', e => {
 
   let bubblesSize = bubbleFrenzyGame.bubbles.length;
 
-  // BUG!!!
+  //
   bubbleFrenzyGame.bubbles = bubbleFrenzyGame.bubbles.filter(bubble => {
-    // if (isMouseHit(mousePos, bubble)) {
-    //   try {
-    //     createjs.Sound.play(randomSounds(bubbleFrenzyGame.sounds));
-    //   } catch {
-    //     console.log('are you connected to the internet?');
-    //   }
-      return !isMouseHit(mousePos, bubble);
-    // }
+    if (isMouseHit(mousePos, bubble)) {
+      try {
+        createjs.Sound.play(randomSounds(bubbleFrenzyGame.sounds));
+      } catch {
+        console.log('are you connected to the internet?');
+      }
+    }
+    return !isMouseHit(mousePos, bubble);
   });
 
 
