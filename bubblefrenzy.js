@@ -12,7 +12,7 @@ let bubbleFrenzyGame = {
   clear: function () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   },
-  numberOfBubbles: 20,
+  numberOfBubbles: 50,
   bubbles: [],
   bubbleMinSize: 90,
   bubbleMaxSize: 200,
