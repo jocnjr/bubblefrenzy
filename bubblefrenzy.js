@@ -1,4 +1,5 @@
-var bubbleFrenzyGame = {
+
+let bubbleFrenzyGame = {
   canvas: document.createElement("canvas"),
   start: function () {
     this.canvas.width = 600;
@@ -11,16 +12,45 @@ var bubbleFrenzyGame = {
   clear: function () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   },
-  numberOfBubbles: 100,
+  numberOfBubbles: 5,
   bubbles: [],
-  bubbleMinSize: 20,
-  bubbleMaxSize: 50,
+  bubbleMinSize: 80,
+  bubbleMaxSize: 125,
   colors: [
-   '#2185C5',
-   '#7ECEFD',
-  //  '#FFF6E5',
-   '#FF7F66' 
-  ]
+    '#1A5AD9',
+    '##48D904',
+    '#F2BC1B',
+    '#F25116'
+  ],
+  sounds: [
+    // 'soundBubbles',
+    'bubblePop1',
+    'bubblePop2',
+    'bubblePop3',
+    'bubblePop4'
+  ],
+  points: 0,
+  round: 1,
+  drawScore: function () {
+    this.context.font = "18px serif";
+    this.context.fillStyle = "#024059";
+    this.context.fillText("score: " + this.points, 500, 20);
+  },
+  drawRound: function() {
+    this.context.font = "18px serif";
+    this.context.fillStyle = "#024059";
+    this.context.fillText("round: " + this.round, 500, 40);
+  },
+  updateScore: function (newScore) {
+    this.points += Math.floor(newScore * 50 * newScore);
+  },
+  nextRound: function () {
+    this.numberOfBubbles = this.numberOfBubbles * 1.6;
+    this.bubbleMinSize = this.bubbleMinSize * 0.85;
+    this.bubbleMaxSize = this.bubbleMaxSize * 0.6;
+    this.round += 1;
+    console.log('next round!', this)
+  }
 };
 
 class Bubble {
@@ -31,7 +61,6 @@ class Bubble {
     this.y = y + radius;
     this.speedX = (Math.random() - 0.5) * 5;
     this.speedY = (Math.random() - 0.5) * 5;
-    this.mass = 1;
   }
 
   update() {
@@ -41,12 +70,6 @@ class Bubble {
     ctx.arc(this.x, this.y, this.radius, 0, 7);
     ctx.fill();
     ctx.closePath();
-
-     for (let i = 0; i < bubbleFrenzyGame.bubbles.length; i += 1) {
-      if (this === bubbleFrenzyGame.bubbles[i]) continue;
-
-      if (getDistance(this.x, this.y, bubbleFrenzyGame.bubbles[i].x, bubbleFrenzyGame.bubbles[i].y) - this.radius * 2 < 0) console.log('has collided');
-    }
   }
 
   newPos() {
@@ -71,17 +94,24 @@ function randomColors(colors) {
   return colors[Math.floor(Math.random() * colors.length)]
 };
 
+function randomSounds(sounds) {
+  return sounds[Math.floor(Math.random() * sounds.length)]
+}
+
 // initialising bubbles
 
-for (let i = 0; i < bubbleFrenzyGame.numberOfBubbles; i += 1) {
-  let randomRadius = randomIntFromRange(bubbleFrenzyGame.bubbleMinSize, bubbleFrenzyGame.bubbleMaxSize);
-  let x = randomIntFromRange(randomRadius, 600 - randomRadius * 2);
-  let y = randomIntFromRange(randomRadius, 400 - randomRadius * 2);
-  let color = randomColors(bubbleFrenzyGame.colors);
-  console.log(randomRadius, x, y)
+function init() {
+  for (let i = 0; i < bubbleFrenzyGame.numberOfBubbles; i += 1) {
+    let randomRadius = randomIntFromRange(bubbleFrenzyGame.bubbleMinSize, bubbleFrenzyGame.bubbleMaxSize);
+    let x = randomIntFromRange(randomRadius, 600 - randomRadius * 2);
+    let y = randomIntFromRange(randomRadius, 400 - randomRadius * 2);
+    let color = randomColors(bubbleFrenzyGame.colors);
+    console.log(randomRadius, x, y)
+  
+    let newBubble = new Bubble(randomRadius, color, x, y);
+    bubbleFrenzyGame.bubbles.push(newBubble);
+  }
 
-  let newBubble = new Bubble(randomRadius, color, x, y);
-  bubbleFrenzyGame.bubbles.push(newBubble);
 }
 
 console.log(bubbleFrenzyGame.canvas.width, bubbleFrenzyGame.canvas.height);
@@ -104,11 +134,22 @@ function updateGameArea() {
       bubbleX.speedX *= -1;
     }
   }
+
+  bubbleFrenzyGame.drawScore();
+  bubbleFrenzyGame.drawRound();
+
   // requestAnimationFrame(updateGameArea)
 }
 
 function isMouseHit(mousePos, bubble) {
+  try {
+    createjs.Sound.play(randomSounds(bubbleFrenzyGame.sounds));
+  } catch {
+    console.log('are you connected to the internet?');
+  }
+  
   return Math.sqrt((mousePos.x - bubble.x) ** 2 + (mousePos.y - bubble.y) ** 2) < bubble.radius;
+
 
 }
 
@@ -118,9 +159,25 @@ bubbleFrenzyGame.canvas.addEventListener('click', e => {
     y: e.clientY
   };
 
+  
+  let bubblesSize = bubbleFrenzyGame.bubbles.length;
+  
   bubbleFrenzyGame.bubbles = bubbleFrenzyGame.bubbles.filter(bubble => !isMouseHit(mousePos, bubble));
-
-  console.log('canvas click', mousePos);
+  
+  let newBubblesSize = bubbleFrenzyGame.bubbles.length;
+  console.log('canvas click', mousePos, bubblesSize, newBubblesSize);
+  
+  bubbleFrenzyGame.updateScore(bubblesSize - newBubblesSize);
+  
+  // we have a winner
+  if (bubbleFrenzyGame.bubbles.length === 0) {
+    clearInterval(bubbleFrenzyGame.interval);
+    bubbleFrenzyGame.clear();
+    bubbleFrenzyGame.nextRound();
+    bubbleFrenzyGame.start();
+    init();
+  }
 });
 
 bubbleFrenzyGame.start();
+init();
