@@ -1,4 +1,4 @@
-let bubbleFrenzyGame = {
+const bubbleFrenzyGame = {
   canvas: document.createElement("canvas"),
   start: function () {
     this.canvas.width = window.innerWidth - 10;
@@ -92,8 +92,8 @@ class Bubble {
 }
 
 function getDistance(x1, y1, x2, y2) {
-  let xDistance = x2 - x1;
-  let yDistance = y2 - y1;
+  const xDistance = x2 - x1;
+  const yDistance = y2 - y1;
 
   return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
 }
@@ -114,13 +114,13 @@ function randomSounds(sounds) {
 
 function init() {
   for (let i = 0; i < bubbleFrenzyGame.numberOfBubbles; i += 1) {
-    let randomRadius = randomIntFromRange(bubbleFrenzyGame.bubbleMinSize, bubbleFrenzyGame.bubbleMaxSize);
-    let x = randomIntFromRange(randomRadius, bubbleFrenzyGame.canvas.width - randomRadius * 2);
-    let y = randomIntFromRange(randomRadius, bubbleFrenzyGame.canvas.height - randomRadius * 2);
-    let color = randomColors(bubbleFrenzyGame.colors);
+    const randomRadius = randomIntFromRange(bubbleFrenzyGame.bubbleMinSize, bubbleFrenzyGame.bubbleMaxSize);
+    const x = randomIntFromRange(randomRadius, bubbleFrenzyGame.canvas.width - randomRadius * 2);
+    const y = randomIntFromRange(randomRadius, bubbleFrenzyGame.canvas.height - randomRadius * 2);
+    const color = randomColors(bubbleFrenzyGame.colors);
     console.log(randomRadius, x, y)
 
-    let newBubble = new Bubble(randomRadius, color, x, y);
+    const newBubble = new Bubble(randomRadius, color, x, y);
     bubbleFrenzyGame.bubbles.push(newBubble);
   }
 
@@ -132,7 +132,7 @@ function updateGameArea() {
   bubbleFrenzyGame.clear();
 
   for (let i = 0; i < bubbleFrenzyGame.bubbles.length; i += 1) {
-    let bubbleX = bubbleFrenzyGame.bubbles[i];
+    const bubbleX = bubbleFrenzyGame.bubbles[i];
     bubbleX.newPos();
     bubbleX.update();
 
@@ -161,7 +161,7 @@ bubbleFrenzyGame.canvas.addEventListener('click', e => {
   };
 
 
-  let bubblesSize = bubbleFrenzyGame.bubbles.length;
+  const bubblesSize = bubbleFrenzyGame.bubbles.length;
 
   //
   bubbleFrenzyGame.bubbles = bubbleFrenzyGame.bubbles.filter(bubble => {
@@ -177,7 +177,7 @@ bubbleFrenzyGame.canvas.addEventListener('click', e => {
 
 
 
-  let newBubblesSize = bubbleFrenzyGame.bubbles.length;
+  const newBubblesSize = bubbleFrenzyGame.bubbles.length;
   console.log('canvas click', mousePos, bubblesSize, newBubblesSize);
 
   bubbleFrenzyGame.updateScore(bubblesSize - newBubblesSize);
